@@ -1,0 +1,25 @@
+name: Deploy Pages
+on:
+  push: { branches: [main] }
+  workflow_dispatch:
+  schedule: [{ cron: '17 * * * *' }]   # hourly: after the takedown date the site is replaced with a blank page
+permissions: { contents: read, pages: write, id-token: write }
+env:
+  TAKEDOWN_AT: "2026-10-28T02:31:24Z"   # set by the publish step to publish time + 10 days
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: "${{ steps.d.outputs.page_url }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Takedown check
+        run: |
+          if [ "$(date -u +%s)" -ge "$(date -u -d "$TAKEDOWN_AT" +%s)" ]; then
+            mkdir ended && echo '<!doctype html><meta charset=utf-8><title>ended</title><p style="font:18px sans-serif;text-align:center;margin-top:30vh">this event has ended.</p>' > ended/index.html
+            echo "SITE_DIR=ended" >> $GITHUB_ENV
+          else echo "SITE_DIR=public" >> $GITHUB_ENV; fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: "${{ env.SITE_DIR }}" }
+      - id: d
+        uses: actions/deploy-pages@v4
