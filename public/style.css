@@ -54,3 +54,4 @@ h2 .count { display: inline-block; min-width: 1.6em; margin-left: 8px; padding: 
 h1 .sk { border-radius: 16px; }
 @keyframes pulse { 0%, 100% { background: var(--skel-a); } 50% { background: var(--skel-b); } }
 @media (prefers-reduced-motion: reduce) { .sk { animation-duration: 3s; } }
+h1 strong { font-weight: 800; }

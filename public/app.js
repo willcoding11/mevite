@@ -125,6 +125,8 @@ async function eventScreen(ev, me) {
 }
 
 (async () => {
+  mount(h('h1', {}, h('strong', {}, 'party canceled')), h('p', { class: 'muted' }, 'sorry. the party is off.'));
+  return;
   const evP = (async () => {
     try { return window.EVITE_CONFIG.supabaseUrl ? await api('GET', '/api/event') : await (await fetch('event.json', { cache: 'no-cache' })).json(); }
     catch { return { title: 'Birthday Party' }; }
